@@ -1,0 +1,100 @@
+{
+	"ID": "08dbede72ca9290bf62590f55c022e11",
+	"TypeName": "FlaxEngine.Prefab",
+	"EngineBuild": 6405,
+	"Data": [
+	{
+		"ID": "08dbede72ca4a385f62590da5c022cfa",
+		"TypeName": "FlaxEngine.RigidBody",
+		"ParentID": "00000000000000000000000000000000",
+		"Name": "Player",
+		"Transform": {
+			"Translation": {
+				"X": 0.0,
+				"Y": 259.3435668945313,
+				"Z": 0.0
+			},
+			"Orientation": {
+				"X": 0.0,
+				"Y": 0.9993908405303956,
+				"Z": 0.0,
+				"W": 0.03489949554204941
+			}
+		},
+		"Mass": 452.389404296875,
+		"Constraints": 40
+	},
+	{
+		"ID": "08dbede72ca5f0c7f62590da5c022cff",
+		"TypeName": "Game.Player.PhysicsPlayerController",
+		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"V": {
+			"PlayerCamera": "08dbede72ca809fef62590da5c022d01",
+			"PlayerModel": "08dbede72ca717cbf62590da5c022d01",
+			"CrossHair": "08dbed51211bacf3565edf84a54d6e5c",
+			"AccelerationForce": 10000.0,
+			"Actor": "08dbede72ca4a385f62590da5c022cfa",
+			"Parent": "08dbede72ca4a385f62590da5c022cfa",
+			"OrderInParent": 0
+		}
+	},
+	{
+		"ID": "08dbede72ca67fd8f62590da5c022d00",
+		"TypeName": "FlaxEngine.CapsuleCollider",
+		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"Name": "PlayerCollider",
+		"Transform": {
+			"Orientation": {
+				"X": 0.0,
+				"Y": 0.0,
+				"Z": 0.7071068286895752,
+				"W": 0.7071068286895752
+			}
+		},
+		"Radius": 30.0,
+		"Height": 120.0
+	},
+	{
+		"ID": "08dbede72ca717cbf62590da5c022d01",
+		"TypeName": "FlaxEngine.StaticModel",
+		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"Name": "StaticModel",
+		"Transform": {
+			"Translation": {
+				"X": 0.0,
+				"Y": -88.91943359375,
+				"Z": 0.0
+			},
+			"Scale": {
+				"X": 1.200000047683716,
+				"Y": 1.7400000095367432,
+				"Z": 1.200000047683716
+			}
+		},
+		"Model": "3f82e57744f57c28285150b646ad2198",
+		"Buffer": {
+			"Entries": [
+				{
+					"Material": "00000000000000000000000000000000",
+					"ShadowsMode": 3,
+					"Visible": true,
+					"ReceiveDecals": true
+				}
+			]
+		}
+	},
+	{
+		"ID": "08dbede72ca809fef62590da5c022d01",
+		"TypeName": "FlaxEngine.Camera",
+		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"Name": "PlayerCamera",
+		"Transform": {
+			"Translation": {
+				"X": 0.0,
+				"Y": 74.73635864257813,
+				"Z": 0.0
+			}
+		}
+	}
+]
+}
