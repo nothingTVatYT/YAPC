@@ -26,7 +26,7 @@
 	},
 	{
 		"ID": "08dbede72ca5f0c7f62590da5c022cff",
-		"TypeName": "Game.Player.PhysicsPlayerController",
+		"TypeName": "YAPC.Player.PhysicsPlayerController",
 		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
 		"V": {
 			"PlayerCamera": "08dbede72ca809fef62590da5c022d01",

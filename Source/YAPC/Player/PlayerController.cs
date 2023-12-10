@@ -1,6 +1,6 @@
 ﻿using FlaxEngine;
 
-namespace Game.Player;
+namespace YAPC.Player;
 
 /// <summary>
 /// PlayerController Script.

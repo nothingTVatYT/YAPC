@@ -1,6 +1,6 @@
 ﻿using FlaxEngine;
 
-namespace Game.Player;
+namespace YAPC.Player;
 
 /// <summary>
 /// PhysicsPlayerController Script for a rigidbody-based FPS-style player controller 
@@ -24,6 +24,7 @@ public class PhysicsPlayerController : PlayerController
     public float RunSpeed = 1500;
     public float MouseSpeed = 1f;
     public float AccelerationForce = 1000;
+    public float DecelerationForceFactor = 2;
     public float JumpForceFactor = 6f;
     private bool _inputEnabled = true;
     private float _bodyRotationY;
@@ -156,8 +157,13 @@ public class PhysicsPlayerController : PlayerController
         // decelerate if there is no input
         if (_isGrounded && _movementLocalDirection.LengthSquared < Mathf.Epsilon)
         {
-            if (_rigidBody.LinearVelocity.LengthSquared > Mathf.Epsilon)
-                _rigidBody.AddForce(-_rigidBody.LinearVelocity, ForceMode.Acceleration);
+            Vector3 velocityXz = _rigidBody.LinearVelocity;
+            velocityXz.Y = 0;
+            if (velocityXz.LengthSquared > Mathf.Epsilon)
+            {
+                _rigidBody.AddForce(-velocityXz * DecelerationForceFactor, ForceMode.Acceleration);
+                
+            }
         }
     }
 
