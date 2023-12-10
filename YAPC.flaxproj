@@ -1,0 +1,13 @@
+{
+	"Name: "YAPC",
+	"Version": "1.0",
+	"Company": "",
+	"Copyright": "MIT",
+	"GameTarget": "YAPCTarget",
+	"References": [
+		{
+			"Name": "$(EnginePath)/Flax.flaxproj"
+		}
+	],
+	"MinEngineVersion": "1.7.6406.1"
+}
