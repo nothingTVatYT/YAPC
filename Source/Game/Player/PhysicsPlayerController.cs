@@ -24,6 +24,7 @@ public class PhysicsPlayerController : PlayerController
     public float RunSpeed = 1500;
     public float MouseSpeed = 1f;
     public float AccelerationForce = 1000;
+    public float JumpForceFactor = 6f;
     private bool _inputEnabled = true;
     private float _bodyRotationY;
     private Vector3 _movementLocalDirection;
@@ -126,7 +127,7 @@ public class PhysicsPlayerController : PlayerController
             {
                 if (hit.Collider.Equals(_playerCollider))
                     continue;
-                heightOverGround = (hit.Point - Actor.Position).Y;
+                heightOverGround = Mathf.Min(heightOverGround, (hit.Point - Actor.Position).Y);
             }
         }
 
@@ -147,7 +148,7 @@ public class PhysicsPlayerController : PlayerController
 
         if (_startJumping)
         {
-            _movementLocalDirection.Y += 6;
+            _movementLocalDirection.Y += JumpForceFactor;
             _startJumping = false;
         }
         _rigidBody.AddForce(Actor.Transform.TransformDirection(_movementLocalDirection) * AccelerationForce, ForceMode.Acceleration);
