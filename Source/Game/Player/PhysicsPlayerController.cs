@@ -142,6 +142,7 @@ public class PhysicsPlayerController : PlayerController
         {
             _rigidBody.AddForce(-_rigidBody.LinearVelocity, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
+            _movementLocalDirection.X = 0;
         }
 
         if (_startJumping)
