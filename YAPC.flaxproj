@@ -1,13 +1,28 @@
-{
-	"Name: "YAPC",
-	"Version": "1.0",
+﻿{
+	"Name": "YAPC",
+	"Version": "1.0.0",
 	"Company": "",
-	"Copyright": "MIT",
+	"Copyright": "",
 	"GameTarget": "YAPCTarget",
+	"EditorTarget": "YAPCEditorTarget",
 	"References": [
 		{
 			"Name": "$(EnginePath)/Flax.flaxproj"
 		}
 	],
-	"MinEngineVersion": "1.7.6406.1"
+	"DefaultScene": null,
+	"DefaultSceneSpawn": {
+		"Position": {
+			"X": 0.0,
+			"Y": 0.0,
+			"Z": 0.0
+		},
+		"Direction": {
+			"X": 0.0,
+			"Y": 0.0,
+			"Z": 0.0
+		}
+	},
+	"MinEngineVersion": "1.7.6406.1",
+	"EngineNickname": null
 }
