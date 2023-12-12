@@ -1,5 +1,4 @@
-﻿using FlaxEditor.Content.Settings;
-using FlaxEngine;
+﻿using FlaxEngine;
 
 namespace YAPC.Player;
 
@@ -195,6 +194,7 @@ public class PhysicsPlayerController : PlayerController
 
     }
 
+    /// <inheritdoc />
     public override void ReleaseMouse()
     {
         _inputEnabled = false;
@@ -204,6 +204,7 @@ public class PhysicsPlayerController : PlayerController
             CrossHair.Control.Visible = false;
     }
 
+    /// <inheritdoc />
     public override void SetInputEnabled(bool value)
     {
         if (value)
@@ -214,16 +215,19 @@ public class PhysicsPlayerController : PlayerController
         }
     }
 
+    /// <inheritdoc />
     public override bool IsInputEnabled()
     {
         return _inputEnabled;
     }
 
+    /// <inheritdoc />
     public override void RequestTeleport(Vector3 position, Matrix rotation)
     {
         throw new System.NotImplementedException();
     }
 
+    /// <inheritdoc />
     public override void GrabMouse()
     {
         _inputEnabled = true;
@@ -233,6 +237,7 @@ public class PhysicsPlayerController : PlayerController
             CrossHair.Control.Visible = true;
     }
 
+    /// <inheritdoc />
     public override void OnDebugDraw()
     {
         DebugDraw.DrawRay(Actor.Position, _playerTargetDirection * 100, Color.Red );
