@@ -68,6 +68,14 @@ public class PhysicsPlayerController : PlayerController
     /// <inheritdoc/>
     public override void OnUpdate()
     {
+        if (Input.Mouse.GetButtonDown(MouseButton.Right))
+        {
+            if (Screen.CursorLock == CursorLockMode.Locked)
+                ReleaseMouse();
+            else
+                GrabMouse();
+        }
+
         _bodyRotationY = 0;
         if (!_inputEnabled || _playerCollider == null)
             return;
@@ -140,9 +148,12 @@ public class PhysicsPlayerController : PlayerController
 
         // limit speed
         var localVelocity = Actor.Transform.WorldToLocalVector(_rigidBody.LinearVelocity);
-        if (localVelocity.Z > _speed || localVelocity.Z < -_speed || localVelocity.X > _speed || localVelocity.X < -_speed)
+        var localVelocityXz = localVelocity;
+        localVelocityXz.Y = 0;
+        if (localVelocityXz.LengthSquared > Mathf.Square(_speed))
         {
-            _rigidBody.AddForce(-_rigidBody.LinearVelocity, ForceMode.Acceleration);
+            var worldVelocityXz = Actor.Transform.LocalToWorldVector(localVelocityXz);
+            _rigidBody.AddForce(-worldVelocityXz, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
             _movementLocalDirection.X = 0;
         }
@@ -157,12 +168,11 @@ public class PhysicsPlayerController : PlayerController
         // decelerate if there is no input
         if (_isGrounded && _movementLocalDirection.LengthSquared < Mathf.Epsilon)
         {
-            Vector3 velocityXz = _rigidBody.LinearVelocity;
+            var velocityXz = _rigidBody.LinearVelocity;
             velocityXz.Y = 0;
             if (velocityXz.LengthSquared > Mathf.Epsilon)
             {
                 _rigidBody.AddForce(-velocityXz * DecelerationForceFactor, ForceMode.Acceleration);
-                
             }
         }
     }

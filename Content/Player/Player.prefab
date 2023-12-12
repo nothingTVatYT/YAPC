@@ -1,22 +1,21 @@
 {
 	"ID": "08dbede72ca9290bf62590f55c022e11",
 	"TypeName": "FlaxEngine.Prefab",
-	"EngineBuild": 6405,
+	"EngineBuild": 6406,
 	"Data": [
 	{
 		"ID": "08dbede72ca4a385f62590da5c022cfa",
 		"TypeName": "FlaxEngine.RigidBody",
-		"ParentID": "00000000000000000000000000000000",
 		"Name": "Player",
 		"Transform": {
 			"Translation": {
 				"X": 0.0,
-				"Y": 259.3435668945313,
+				"Y": 259.34356689453127,
 				"Z": 0.0
 			},
 			"Orientation": {
 				"X": 0.0,
-				"Y": 0.9993908405303956,
+				"Y": 0.9993908405303955,
 				"Z": 0.0,
 				"W": 0.03489949554204941
 			}
@@ -29,14 +28,10 @@
 		"TypeName": "YAPC.Player.PhysicsPlayerController",
 		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
 		"V": {
-			"PlayerCamera": "08dbede72ca809fef62590da5c022d01",
-			"PlayerModel": "08dbede72ca717cbf62590da5c022d01",
-			"CrossHair": "08dbed51211bacf3565edf84a54d6e5c",
-			"AccelerationForce": 10000.0,
-			"Actor": "08dbede72ca4a385f62590da5c022cfa",
-			"Parent": "08dbede72ca4a385f62590da5c022cfa",
-			"OrderInParent": 0
-		}
+	"PlayerCamera": "08dbede72ca809fef62590da5c022d01",
+	"PlayerModel": "08dbede72ca717cbf62590da5c022d01",
+	"AccelerationForce": 10000.0
+}
 	},
 	{
 		"ID": "08dbede72ca67fd8f62590da5c022d00",
@@ -66,9 +61,9 @@
 				"Z": 0.0
 			},
 			"Scale": {
-				"X": 1.200000047683716,
+				"X": 1.2000000476837159,
 				"Y": 1.7400000095367432,
-				"Z": 1.200000047683716
+				"Z": 1.2000000476837159
 			}
 		},
 		"Model": "3f82e57744f57c28285150b646ad2198",
