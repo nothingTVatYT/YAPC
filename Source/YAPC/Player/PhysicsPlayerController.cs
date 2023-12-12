@@ -18,9 +18,9 @@ public class PhysicsPlayerController : PlayerController
     [Tooltip("Use the mouse to rotate the body, not only the camera")]
     public bool RotateBodyWithCamera = true;
     public float KeyboardRotationSpeed = 1000f;
-    [Tooltip("Maximum walking speed")]
+    [Tooltip("Maximum walking speed (cm/s)")]
     public float WalkingSpeed = 500;
-    [Tooltip("Maximum running speed")]
+    [Tooltip("Maximum running speed (cm/s)")]
     public float RunSpeed = 1500;
     public float MouseSpeed = 1f;
     public float AccelerationForce = 10000;
@@ -87,10 +87,10 @@ public class PhysicsPlayerController : PlayerController
 
         if (_crouching)
         {
-            if (_playerCollider.Height > 0.61f)
+            if (_playerCollider.Height > 21f)
                 Debug.Log("Start crouching");
-            _playerCollider.Height = 0.6f;
-            PlayerCamera.LocalPosition = new Vector3(0, 0.2, 0);
+            _playerCollider.Height = 20f;
+            PlayerCamera.LocalPosition = new Vector3(0, 1, 0);
         }
         else
         {
