@@ -1,4 +1,5 @@
-﻿using FlaxEngine;
+﻿using FlaxEditor.Content.Settings;
+using FlaxEngine;
 
 namespace YAPC.Player;
 
@@ -36,6 +37,8 @@ public class PhysicsPlayerController : PlayerController
     private CapsuleCollider _playerCollider;
     private bool _isGrounded;
     private bool _startJumping;
+    private bool _breaking;
+    private float _stopTime;
     private bool _crouching;
     private float _initialColliderHeight;
     private float _initialCameraHeight;
@@ -143,7 +146,31 @@ public class PhysicsPlayerController : PlayerController
         _isGrounded = heightOverGround < 5f;
         if (!_isGrounded)
             _movementLocalDirection = Vector3.Zero;
-        
+
+        // release break
+        if (_movementLocalDirection.LengthSquared > Mathf.Epsilon && _breaking)
+        {
+            _breaking = false;
+        }
+
+        // decelerate on ground if there is no input
+        if (_isGrounded)
+        {
+            if (_movementLocalDirection.LengthSquared < Mathf.Epsilon)
+            {
+                if (!_breaking)
+                {
+                    _breaking = true;
+                    _stopTime = Time.GameTime + 0.5f;
+                }
+                else
+                {
+                    if (Time.GameTime >= _stopTime && _rigidBody.LinearVelocity.LengthSquared > Mathf.Epsilon)
+                        _rigidBody.AddForce(-_rigidBody.LinearVelocity * DecelerationForceFactor, ForceMode.Acceleration);
+                }
+            }
+        }
+
         _rigidBody.Direction = Vector3.Lerp(_rigidBody.Direction, _playerTargetDirection, 0.5f);
 
         // limit speed
@@ -165,16 +192,6 @@ public class PhysicsPlayerController : PlayerController
         }
         _rigidBody.AddForce(Actor.Transform.TransformDirection(_movementLocalDirection) * AccelerationForce, ForceMode.Acceleration);
 
-        // decelerate if there is no input
-        if (_isGrounded && _movementLocalDirection.LengthSquared < Mathf.Epsilon)
-        {
-            var velocityXz = _rigidBody.LinearVelocity;
-            velocityXz.Y = 0;
-            if (velocityXz.LengthSquared > Mathf.Epsilon)
-            {
-                _rigidBody.AddForce(-velocityXz * DecelerationForceFactor, ForceMode.Acceleration);
-            }
-        }
     }
 
     public override void ReleaseMouse()
