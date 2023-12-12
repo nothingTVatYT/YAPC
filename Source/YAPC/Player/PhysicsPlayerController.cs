@@ -1,4 +1,5 @@
 ﻿using FlaxEngine;
+using YAPC.Tools;
 
 namespace YAPC.Player;
 
@@ -26,10 +27,15 @@ public class PhysicsPlayerController : PlayerController
     public float AccelerationForce = 10000;
     public float DecelerationForceFactor = 50;
     public float JumpForceFactor = 6f;
+    /// <summary>
+    /// Get the current speed in the horizontal plane (averaged over 0.5 sec)
+    /// </summary>
+    public float CurrentSpeed => _speedAverage.Average;
     private bool _inputEnabled = true;
     private float _bodyRotationY;
     private Vector3 _movementLocalDirection;
     private float _speed;
+    private readonly FloatAverage _speedAverage = new(30);
     private Vector3 _playerTargetDirection = Vector3.Forward;
 
     private RigidBody _rigidBody;
@@ -178,7 +184,9 @@ public class PhysicsPlayerController : PlayerController
         // limit speed
         var speedXz = _rigidBody.LinearVelocity;
         speedXz.Y = 0;
-        if (speedXz.LengthSquared > Mathf.Square(_speed))
+        var speedScalar = speedXz.Length;
+        _speedAverage.Add(speedScalar);
+        if (speedScalar > _speed)
         {
             _rigidBody.AddForce(-speedXz, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
