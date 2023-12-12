@@ -165,8 +165,10 @@ public class PhysicsPlayerController : PlayerController
                 }
                 else
                 {
-                    if (Time.GameTime >= _stopTime && _rigidBody.LinearVelocity.LengthSquared > Mathf.Epsilon)
-                        _rigidBody.AddForce(-_rigidBody.LinearVelocity * DecelerationForceFactor, ForceMode.Acceleration);
+                    var velocityXz = _rigidBody.LinearVelocity;
+                    velocityXz.Y = 0;
+                    if (Time.GameTime >= _stopTime && velocityXz.LengthSquared > Mathf.Epsilon)
+                        _rigidBody.AddForce(-velocityXz * DecelerationForceFactor, ForceMode.Acceleration);
                 }
             }
         }
