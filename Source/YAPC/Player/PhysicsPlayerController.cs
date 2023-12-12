@@ -19,18 +19,14 @@ public class PhysicsPlayerController : PlayerController
     [Tooltip("Use the mouse to rotate the body, not only the camera")]
     public bool RotateBodyWithCamera = true;
     public float KeyboardRotationSpeed = 1000f;
-    [Tooltip("Maximum walking speed (cm/s)")]
-    public float WalkingSpeed = 500;
-    [Tooltip("Maximum running speed (cm/s)")]
-    public float RunSpeed = 1500;
     public float MouseSpeed = 1f;
     public float AccelerationForce = 10000;
     public float DecelerationForceFactor = 50;
-    public float JumpForceFactor = 6f;
-    /// <summary>
-    /// Get the current speed in the horizontal plane (averaged over 0.5 sec)
-    /// </summary>
-    public float CurrentSpeed => _speedAverage.Average;
+    public float JumpForceFactor = 3.5f;
+    /// <inheritdoc />
+    public override float CurrentSpeed => _speedAverage.Average;
+    /// <inheritdoc />
+    public override bool IsGrounded => _isGrounded;
     private bool _inputEnabled = true;
     private float _bodyRotationY;
     private Vector3 _movementLocalDirection;

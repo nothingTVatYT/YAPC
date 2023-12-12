@@ -7,6 +7,11 @@ namespace YAPC.Player;
 /// </summary>
 public abstract class PlayerController : Script
 {
+    [Tooltip("Maximum walking speed (cm/s)")]
+    public float WalkingSpeed = 500;
+    [Tooltip("Maximum running speed (cm/s)")]
+    public float RunSpeed = 1500;
+
     /// <summary>
     /// The player controller can grab the mouse (it may be locked)
     /// </summary>
@@ -31,4 +36,14 @@ public abstract class PlayerController : Script
     /// <param name="position"></param>
     /// <param name="rotation"></param>
     public abstract void RequestTeleport(Vector3 position, Matrix rotation);
+
+    /// <summary>
+    /// Get the current speed in the horizontal plane
+    /// </summary>
+    public abstract float CurrentSpeed { get; }
+
+    /// <summary>
+    /// Returns true if the player is on a surface, false if in the air (e.g. jumping, falling)
+    /// </summary>
+    public abstract bool IsGrounded { get; }
 }
