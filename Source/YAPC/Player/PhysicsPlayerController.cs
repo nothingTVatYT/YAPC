@@ -24,8 +24,8 @@ public class PhysicsPlayerController : PlayerController
     [Tooltip("Maximum running speed")]
     public float RunSpeed = 1500;
     public float MouseSpeed = 1f;
-    public float AccelerationForce = 1000;
-    public float DecelerationForceFactor = 2;
+    public float AccelerationForce = 10000;
+    public float DecelerationForceFactor = 50;
     public float JumpForceFactor = 6f;
     private bool _inputEnabled = true;
     private float _bodyRotationY;
@@ -127,13 +127,14 @@ public class PhysicsPlayerController : PlayerController
         PlayerCamera.LocalEulerAngles = cameraRotation;
     }
 
+    /// <inheritdoc />
     public override void OnFixedUpdate()
     {
         if (_rigidBody == null)
             return;
 
         var heightOverGround = 200f;
-        if (Physics.SphereCastAll(Actor.Position, 0.2f, Vector3.Down, out var results, 200))
+        if (Physics.SphereCastAll(Actor.Position, 20f, Vector3.Down, out var results, 200))
         {
             foreach (var hit in results)
             {
