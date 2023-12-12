@@ -176,13 +176,11 @@ public class PhysicsPlayerController : PlayerController
         _rigidBody.Direction = Vector3.Lerp(_rigidBody.Direction, _playerTargetDirection, 0.5f);
 
         // limit speed
-        var localVelocity = Actor.Transform.WorldToLocalVector(_rigidBody.LinearVelocity);
-        var localVelocityXz = localVelocity;
-        localVelocityXz.Y = 0;
-        if (localVelocityXz.LengthSquared > Mathf.Square(_speed))
+        var speedXz = _rigidBody.LinearVelocity;
+        speedXz.Y = 0;
+        if (speedXz.LengthSquared > Mathf.Square(_speed))
         {
-            var worldVelocityXz = Actor.Transform.LocalToWorldVector(localVelocityXz);
-            _rigidBody.AddForce(-worldVelocityXz, ForceMode.Acceleration);
+            _rigidBody.AddForce(-speedXz, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
             _movementLocalDirection.X = 0;
         }
