@@ -1,4 +1,5 @@
-﻿using FlaxEngine;
+﻿using System;
+using FlaxEngine;
 using YAPC.Tools;
 
 namespace YAPC.Player;
@@ -42,12 +43,14 @@ public class PhysicsPlayerController : PlayerController
     private RigidBody _rigidBody;
     private CapsuleCollider _playerCollider;
     private bool _isGrounded;
+    private bool _isRunning;
     private bool _startJumping;
     private bool _breaking;
     private float _stopTime;
     private bool _crouching;
     private float _initialColliderHeight;
     private Vector3 _initialCameraLocation;
+    private FootstepsSound _footsteps;
 
     /// <inheritdoc/>
     public override void OnStart()
@@ -69,6 +72,8 @@ public class PhysicsPlayerController : PlayerController
         _playerTargetDirection = Actor.Direction;
         _initialColliderHeight = _playerCollider?.Height ?? 120;
         _initialCameraLocation = PlayerCamera.LocalPosition;
+        _footsteps = Actor.FindScript<FootstepsSound>();
+
     }
     
     /// <inheritdoc/>
@@ -104,7 +109,16 @@ public class PhysicsPlayerController : PlayerController
 
         var wasCrouching = _crouching;
         _crouching = Input.GetAction("Crouch") && _isGrounded;
-        _maxSpeed = Input.GetAction("Sprint") && !_crouching ? PlayerValues.MaxRunningSpeed : PlayerValues.MaxWalkingSpeed;
+        if (Input.GetAction("Sprint") && !_crouching)
+        {
+            _maxSpeed = PlayerValues.MaxRunningSpeed;
+            _isRunning = true;
+        }
+        else
+        {
+            _maxSpeed = PlayerValues.MaxWalkingSpeed;
+            _isRunning = false;
+        }
 
         if (_crouching && !wasCrouching)
         {
@@ -175,12 +189,26 @@ public class PhysicsPlayerController : PlayerController
                 if (hit.Collider.Equals(_playerCollider))
                     continue;
                 heightOverGround = Mathf.Min(heightOverGround, (hit.Point - Actor.Position).Y);
+                if (_footsteps != null)
+                    try
+                    {
+                        _footsteps.GroundMaterial =
+                            hit.Collider.As<Actor>().FindActor<Collider>().Material.Instance as PhysicalMaterial;
+                    }
+                    catch (Exception _)
+                    {
+                        _footsteps.GroundMaterial = null;
+                    }
             }
         }
 
         _isGrounded = heightOverGround < 5f;
         if (!_isGrounded)
+        {
             _movementLocalDirection = Vector3.Zero;
+            if (_footsteps != null)
+                _footsteps.Movement = FootstepsSound.MovementType.Idle;
+        }
 
         // release break
         if (_movementLocalDirection.LengthSquared > Mathf.Epsilon && _breaking)
@@ -228,7 +256,10 @@ public class PhysicsPlayerController : PlayerController
             _startJumping = false;
         }
         _rigidBody.AddForce(Actor.Transform.TransformDirection(_movementLocalDirection) * AccelerationForce, ForceMode.Acceleration);
-
+        if (_footsteps != null)
+            _footsteps.Movement = speedScalar > 1
+                ? (_isRunning ? FootstepsSound.MovementType.Running : FootstepsSound.MovementType.Walking)
+                : FootstepsSound.MovementType.Idle;
     }
 
     /// <inheritdoc />

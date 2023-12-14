@@ -10,7 +10,7 @@ public class YAPC : GamePlugin
         _description = new PluginDescription
         {
             Name = "YAPC",
-            Category = "Other",
+            Category = "Input",
             Author = "nothingTVatYT",
             AuthorUrl = null,
             HomepageUrl = null,
@@ -20,15 +20,5 @@ public class YAPC : GamePlugin
             IsAlpha = false,
             IsBeta = false,
         };
-    }
-
-    public override void Initialize()
-    {
-        base.Initialize();
-    }
-
-    public override void Deinitialize()
-    {
-        base.Deinitialize();
     }
 }
