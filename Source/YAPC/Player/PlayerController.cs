@@ -8,7 +8,7 @@ public struct PlayerDefinition
     public float Height;
     [Tooltip("The player's height when crouching in cm")]
     public float CrouchingHeight;
-    [Tooltip("The minimum gap (horizontally) the player can pass in cm")]
+    [Tooltip("Half the minimum gap (horizontally) the player can pass in cm")]
     public float CollisionRadius;
     [Tooltip("Maximum walking speed (cm/s)")]
     public float MaxWalkingSpeed;
@@ -19,7 +19,7 @@ public struct PlayerDefinition
     {
         Height = 180,
         CrouchingHeight = 60,
-        CollisionRadius = 50,
+        CollisionRadius = 25,
         MaxWalkingSpeed = 500,
         MaxRunningSpeed = 1500
     };
