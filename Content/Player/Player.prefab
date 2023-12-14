@@ -1,42 +1,66 @@
 {
-	"ID": "08dbede72ca9290bf62590f55c022e11",
+	"ID": "08dbfcf2fd7ab24b7934d72d1b6f24f0",
 	"TypeName": "FlaxEngine.Prefab",
 	"EngineBuild": 6406,
 	"Data": [
 	{
-		"ID": "08dbede72ca4a385f62590da5c022cfa",
+		"ID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"TypeName": "FlaxEngine.RigidBody",
+		"ParentID": "00000000000000000000000000000000",
 		"Name": "Player",
 		"Transform": {
 			"Translation": {
 				"X": 0.0,
-				"Y": 259.34356689453127,
-				"Z": 0.0
+				"Y": 119.53414916992188,
+				"Z": 75.60173797607422
 			},
 			"Orientation": {
 				"X": 0.0,
-				"Y": 0.9993908405303955,
+				"Y": -0.6360781788825989,
 				"Z": 0.0,
-				"W": 0.03489949554204941
+				"W": 0.7716246247291565
 			}
 		},
 		"Mass": 452.389404296875,
 		"Constraints": 40
 	},
 	{
-		"ID": "08dbede72ca5f0c7f62590da5c022cff",
+		"ID": "08dbfcf2fd738d187934d70f1b6f23c4",
 		"TypeName": "YAPC.Player.PhysicsPlayerController",
-		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"V": {
-	"PlayerCamera": "08dbede72ca809fef62590da5c022d01",
-	"PlayerModel": "08dbede72ca717cbf62590da5c022d01",
-	"AccelerationForce": 10000.0
-}
+			"PlayerCamera": "08dbfcf2fd77f3a07934d70f1b6f23c8",
+			"PlayerModel": "08dbfcf2fd768ad37934d70f1b6f23c8",
+			"CrossHair": "08dbfb326c6732421d58f6e474afee18",
+			"HidePlayerModelOnStart": false
+		}
 	},
 	{
-		"ID": "08dbede72ca67fd8f62590da5c022d00",
+		"ID": "08dbfcf2fd7456987934d70f1b6f23c5",
+		"TypeName": "YAPC.FootstepsSound",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
+		"V": {
+			"Sounds": [
+				{
+					"CategoryId": 1,
+					"Clips": [
+						"08dbfc87f9552a056814a8c9bb6da072"
+					]
+				},
+				{
+					"CategoryId": 2,
+					"Clips": [
+						"08dbfc87f949159a6812635cbb56eaad"
+					]
+				}
+			],
+			"FootstepsAudioSource": "08dbfcf2fd79112d7934d7101b6f23cb"
+		}
+	},
+	{
+		"ID": "08dbfcf2fd75e4307934d70f1b6f23c6",
 		"TypeName": "FlaxEngine.CapsuleCollider",
-		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"Name": "PlayerCollider",
 		"Transform": {
 			"Orientation": {
@@ -50,9 +74,9 @@
 		"Height": 120.0
 	},
 	{
-		"ID": "08dbede72ca717cbf62590da5c022d01",
+		"ID": "08dbfcf2fd768ad37934d70f1b6f23c8",
 		"TypeName": "FlaxEngine.StaticModel",
-		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"Name": "StaticModel",
 		"Transform": {
 			"Translation": {
@@ -61,9 +85,9 @@
 				"Z": 0.0
 			},
 			"Scale": {
-				"X": 1.2000000476837159,
+				"X": 1.200000047683716,
 				"Y": 1.7400000095367432,
-				"Z": 1.2000000476837159
+				"Z": 1.200000047683716
 			}
 		},
 		"Model": "3f82e57744f57c28285150b646ad2198",
@@ -79,9 +103,9 @@
 		}
 	},
 	{
-		"ID": "08dbede72ca809fef62590da5c022d01",
+		"ID": "08dbfcf2fd77f3a07934d70f1b6f23c8",
 		"TypeName": "FlaxEngine.Camera",
-		"ParentID": "08dbede72ca4a385f62590da5c022cfa",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"Name": "PlayerCamera",
 		"Transform": {
 			"Translation": {
@@ -90,6 +114,26 @@
 				"Z": 0.0
 			}
 		}
+	},
+	{
+		"ID": "08dbfcf2fd7803db7934d70f1b6f23ca",
+		"TypeName": "FlaxEngine.AudioListener",
+		"ParentID": "08dbfcf2fd77f3a07934d70f1b6f23c8",
+		"Name": "AudioListener"
+	},
+	{
+		"ID": "08dbfcf2fd79112d7934d7101b6f23cb",
+		"TypeName": "FlaxEngine.AudioSource",
+		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
+		"Name": "AudioSource",
+		"Transform": {
+			"Translation": {
+				"X": 0.0,
+				"Y": -75.0,
+				"Z": 0.0
+			}
+		},
+		"Loop": true
 	}
 ]
 }
