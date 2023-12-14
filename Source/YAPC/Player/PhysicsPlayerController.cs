@@ -195,7 +195,7 @@ public class PhysicsPlayerController : PlayerController
                         _footsteps.GroundMaterial =
                             hit.Collider.As<Actor>().FindActor<Collider>().Material.Instance as PhysicalMaterial;
                     }
-                    catch (Exception _)
+                    catch (Exception)
                     {
                         _footsteps.GroundMaterial = null;
                     }
