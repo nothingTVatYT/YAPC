@@ -2,15 +2,39 @@
 
 namespace YAPC.Player;
 
+public struct PlayerDefinition
+{
+    [Tooltip("The player's height in total when standing in cm")]
+    public float Height;
+    [Tooltip("The player's height when crouching in cm")]
+    public float CrouchingHeight;
+    [Tooltip("The minimum gap (horizontally) the player can pass in cm")]
+    public float CollisionRadius;
+    [Tooltip("Maximum walking speed (cm/s)")]
+    public float MaxWalkingSpeed;
+    [Tooltip("Maximum running speed (cm/s)")]
+    public float MaxRunningSpeed;
+
+    public static PlayerDefinition DefaultPlayer = new()
+    {
+        Height = 180,
+        CrouchingHeight = 60,
+        CollisionRadius = 50,
+        MaxWalkingSpeed = 500,
+        MaxRunningSpeed = 1500
+    };
+}
+
 /// <summary>
 /// PlayerController Script.
 /// </summary>
 public abstract class PlayerController : Script
 {
-    [Tooltip("Maximum walking speed (cm/s)")]
-    public float WalkingSpeed = 500;
-    [Tooltip("Maximum running speed (cm/s)")]
-    public float RunSpeed = 1500;
+    /// <summary>
+    /// Default values for the player
+    /// </summary>
+    [Tooltip("Defaults of the player")]
+    public PlayerDefinition PlayerValues = PlayerDefinition.DefaultPlayer;
 
     /// <summary>
     /// The player controller can grab the mouse (it may be locked)

@@ -11,6 +11,11 @@ namespace YAPC.Player;
 /// </summary>
 public class PhysicsPlayerController : PlayerController
 {
+    /// <summary>
+    /// Adapt the collider and the camera local position to the player values
+    /// </summary>
+    [Tooltip("Adapt the collider and camera location to the player values")]
+    public bool AdaptCollider = true;
     public Camera PlayerCamera;
     public Actor PlayerModel;
     [Tooltip("UI control marking the center of the screen")]
@@ -42,7 +47,7 @@ public class PhysicsPlayerController : PlayerController
     private float _stopTime;
     private bool _crouching;
     private float _initialColliderHeight;
-    private float _initialCameraHeight;
+    private Vector3 _initialCameraLocation;
 
     /// <inheritdoc/>
     public override void OnStart()
@@ -52,9 +57,18 @@ public class PhysicsPlayerController : PlayerController
             PlayerModel.IsActive = false;
         _rigidBody = Actor.As<RigidBody>();
         _playerCollider = Actor.FindActor<Collider>() as CapsuleCollider;
+        if (_playerCollider != null && AdaptCollider)
+        {
+            _playerCollider.Radius = PlayerValues.CollisionRadius;
+            _playerCollider.Height = PlayerValues.Height - 2 * PlayerValues.CollisionRadius;
+            var cameraHeight = PlayerCamera.LocalPosition;
+            cameraHeight.Y = (PlayerValues.Height - PlayerValues.CollisionRadius) / 2;
+            PlayerCamera.LocalPosition = cameraHeight;
+        }
+
         _playerTargetDirection = Actor.Direction;
         _initialColliderHeight = _playerCollider?.Height ?? 120;
-        _initialCameraHeight = PlayerCamera.LocalPosition.Y;
+        _initialCameraLocation = PlayerCamera.LocalPosition;
     }
     
     /// <inheritdoc/>
@@ -90,18 +104,18 @@ public class PhysicsPlayerController : PlayerController
 
         var wasCrouching = _crouching;
         _crouching = Input.GetAction("Crouch") && _isGrounded;
-        _maxSpeed = Input.GetAction("Sprint") && !_crouching ? RunSpeed : WalkingSpeed;
+        _maxSpeed = Input.GetAction("Sprint") && !_crouching ? PlayerValues.MaxRunningSpeed : PlayerValues.MaxWalkingSpeed;
 
         if (_crouching && !wasCrouching)
         {
-            Debug.Log("Start crouching");
-            _playerCollider.Height = 20f;
-            PlayerCamera.LocalPosition = new Vector3(0, 1, 0);
+            _playerCollider.Height = PlayerValues.CrouchingHeight - PlayerValues.CollisionRadius * 2;
+            PlayerCamera.LocalPosition = new Vector3(_initialCameraLocation.X, 1, _initialCameraLocation.Z);
         }
         if (!_crouching && wasCrouching)
         {
             // check max head room
-            if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Up, out var results, 200))
+            var maxDist = PlayerValues.Height - PlayerValues.CrouchingHeight;
+            if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Up, out var results, maxDist))
             {
                 foreach (var result in results)
                 {
@@ -115,7 +129,7 @@ public class PhysicsPlayerController : PlayerController
             if (!_crouching)
             {
                 _playerCollider.Height = _initialColliderHeight;
-                PlayerCamera.LocalPosition = new Vector3(0, _initialCameraHeight, 0);
+                PlayerCamera.LocalPosition = _initialCameraLocation;
             }
         }
 
@@ -153,8 +167,8 @@ public class PhysicsPlayerController : PlayerController
         if (_rigidBody == null)
             return;
 
-        var heightOverGround = 200f;
-        if (Physics.SphereCastAll(Actor.Position, 20f, Vector3.Down, out var results, 200))
+        var heightOverGround = PlayerValues.Height;
+        if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Down, out var results, PlayerValues.Height))
         {
             foreach (var hit in results)
             {
