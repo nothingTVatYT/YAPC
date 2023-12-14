@@ -11,12 +11,6 @@ public struct CategorizedSound
     public AudioClip[] Clips;
 }
 
-public struct CategorizedMaterial
-{
-    public int CategoryId;
-    public PhysicalMaterial Material;
-}
-
 /// <summary>
 /// FootstepsSound Script.
 /// </summary>
@@ -24,44 +18,56 @@ public class FootstepsSound : Script
 {
     public enum MovementType { Idle, Walking, Running }
     public CategorizedSound[] Sounds;
-    public CategorizedMaterial[] Materials;
     public AudioSource FootstepsAudioSource;
+
+    public Tag[] RelevantGroundTags = { Tag.Default };
     //[HideInEditor]
     public MovementType Movement;
     //[HideInEditor]
-    public PhysicalMaterial GroundMaterial;
+    /// <summary>
+    /// set the ground tags to define which footstep sound should be used
+    /// </summary>
+    public Tag[] GroundTags
+    {
+        set
+        {
+            _currentGroundTag = Tag.Default;
+            foreach (var tag in value)
+                if (RelevantGroundTags.Contains(tag))
+                {
+                    _currentGroundTag = tag;
+                    break;
+                }
+        }
+    }
 
-    private int _currentGroundCategory;
-    private int _previousGroundCategory;
+    private Tag _currentGroundTag;
     private MovementType _previousMovement;
-    private PhysicalMaterial _previousGroundMaterial;
+    private Tag _previousGroundTag = Tag.Default;
     private readonly Random _random = new();
     private AudioClip _previousClip;
 
     /// <inheritdoc/>
     public override void OnUpdate()
     {
-        var groundChanged = _previousGroundMaterial != null && !_previousGroundMaterial.Equals(GroundMaterial);
+        var groundChanged = !_previousGroundTag.Equals(_currentGroundTag);
         var soundsChanges = groundChanged || _previousMovement != Movement;
         if (!soundsChanges)
             return;
-        int category;
         // categorize the current movement
-        switch (Movement)
+        var category = Movement switch
         {
-            case MovementType.Walking:
-                category = 1;
-                break;
-            case MovementType.Running:
-                category = 2;
-                break;
-            default:
-                category = 0;
-                break;
-        }
+            MovementType.Walking => 1,
+            MovementType.Running => 2,
+            _ => 0
+        };
 
-        _currentGroundCategory = groundChanged ? GroundCategory(GroundMaterial) : _previousGroundCategory;
-        category += _currentGroundCategory;
+        var tagIndex = RelevantGroundTags.Length == 0
+            ? 0
+            : Array.FindIndex(RelevantGroundTags, tag => tag == _currentGroundTag);
+        if (tagIndex < 0)
+            tagIndex = 0;
+        category += tagIndex;
         AudioClip clip = null;
         foreach (var ac in Sounds)
         {
@@ -71,8 +77,7 @@ public class FootstepsSound : Script
 
         if (clip != null && clip.Equals(_previousClip))
         {
-            _previousGroundCategory = _currentGroundCategory;
-            _previousGroundMaterial = GroundMaterial;
+            _previousGroundTag = _currentGroundTag;
             _previousMovement = Movement;
             return;
         }
@@ -81,14 +86,8 @@ public class FootstepsSound : Script
         FootstepsAudioSource.Clip = clip;
         if (Movement != MovementType.Idle)
             FootstepsAudioSource.Play();
-        _previousGroundCategory = _currentGroundCategory;
-        _previousGroundMaterial = GroundMaterial;
+        _previousGroundTag = _currentGroundTag;
         _previousMovement = Movement;
         _previousClip = clip;
-    }
-
-    private int GroundCategory(PhysicalMaterial material)
-    {
-        return (from cm in Materials where cm.Material.Equals(material) select cm.CategoryId).FirstOrDefault();
     }
 }

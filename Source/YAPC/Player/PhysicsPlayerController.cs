@@ -129,7 +129,8 @@ public class PhysicsPlayerController : PlayerController
         {
             // check max head room
             var maxDist = PlayerValues.Height - PlayerValues.CrouchingHeight;
-            if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Up, out var results, maxDist))
+            if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Up,
+                    out var results, maxDist))
             {
                 foreach (var result in results)
                 {
@@ -182,7 +183,8 @@ public class PhysicsPlayerController : PlayerController
             return;
 
         var heightOverGround = PlayerValues.Height;
-        if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Down, out var results, PlayerValues.Height))
+        if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Down,
+                out var results, PlayerValues.Height))
         {
             foreach (var hit in results)
             {
@@ -192,12 +194,11 @@ public class PhysicsPlayerController : PlayerController
                 if (_footsteps != null)
                     try
                     {
-                        _footsteps.GroundMaterial =
-                            hit.Collider.As<Actor>().FindActor<Collider>().Material.Instance as PhysicalMaterial;
+                        _footsteps.GroundTags = hit.Collider.Tags;
                     }
                     catch (Exception)
                     {
-                        _footsteps.GroundMaterial = null;
+                        _footsteps.GroundTags = null;
                     }
             }
         }
