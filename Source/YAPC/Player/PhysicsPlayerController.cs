@@ -6,7 +6,7 @@ namespace YAPC.Player;
 /// <summary>
 /// PhysicsPlayerController Script for a rigidbody-based FPS-style player controller 
 ///
-/// This controller expects the actions "Crouch" and "Jump" on top of the defaults in the input settings.
+/// This controller expects the actions "Crouch", "Sprint" and "Jump" on top of the defaults in the input settings.
 /// 
 /// </summary>
 public class PhysicsPlayerController : PlayerController
@@ -30,7 +30,7 @@ public class PhysicsPlayerController : PlayerController
     private bool _inputEnabled = true;
     private float _bodyRotationY;
     private Vector3 _movementLocalDirection;
-    private float _speed;
+    private float _maxSpeed;
     private readonly FloatAverage _speedAverage = new(30);
     private Vector3 _playerTargetDirection = Vector3.Forward;
 
@@ -72,6 +72,7 @@ public class PhysicsPlayerController : PlayerController
     /// <inheritdoc/>
     public override void OnUpdate()
     {
+        // RMB toggles mouse cursor locking
         if (Input.Mouse.GetButtonDown(MouseButton.Right))
         {
             if (Screen.CursorLock == CursorLockMode.Locked)
@@ -82,24 +83,42 @@ public class PhysicsPlayerController : PlayerController
 
         _bodyRotationY = 0;
         if (!_inputEnabled || _playerCollider == null)
-            return;
-
-        _crouching = Input.GetAction("Crouch") && _isGrounded;
-        _speed = Input.GetAction("Sprint") && !_crouching ? RunSpeed : WalkingSpeed;
-
-        if (_crouching)
         {
-            if (_playerCollider.Height > 21f)
-                Debug.Log("Start crouching");
+            _speedAverage.Add(0);
+            return;
+        }
+
+        var wasCrouching = _crouching;
+        _crouching = Input.GetAction("Crouch") && _isGrounded;
+        _maxSpeed = Input.GetAction("Sprint") && !_crouching ? RunSpeed : WalkingSpeed;
+
+        if (_crouching && !wasCrouching)
+        {
+            Debug.Log("Start crouching");
             _playerCollider.Height = 20f;
             PlayerCamera.LocalPosition = new Vector3(0, 1, 0);
         }
-        else
+        if (!_crouching && wasCrouching)
         {
-            _playerCollider.Height = _initialColliderHeight;
-            PlayerCamera.LocalPosition = new Vector3(0, _initialCameraHeight, 0);
+            // check max head room
+            if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Up, out var results, 200))
+            {
+                foreach (var result in results)
+                {
+                    if (result.Collider.Equals(_playerCollider))
+                        continue;
+                    _crouching = true;
+                    break;
+                }
+            }
+
+            if (!_crouching)
+            {
+                _playerCollider.Height = _initialColliderHeight;
+                PlayerCamera.LocalPosition = new Vector3(0, _initialCameraHeight, 0);
+            }
         }
-        
+
         // forward and backward movement (e.g. W + S keys)
         var verticalInput = Input.GetAxis("Vertical");
         // turning (e.g. A + D keys)
@@ -182,7 +201,7 @@ public class PhysicsPlayerController : PlayerController
         speedXz.Y = 0;
         var speedScalar = speedXz.Length;
         _speedAverage.Add(speedScalar);
-        if (speedScalar > _speed)
+        if (speedScalar > _maxSpeed)
         {
             _rigidBody.AddForce(-speedXz, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
@@ -228,7 +247,10 @@ public class PhysicsPlayerController : PlayerController
     /// <inheritdoc />
     public override void RequestTeleport(Vector3 position, Matrix rotation)
     {
-        throw new System.NotImplementedException();
+        // force the rigidbody to a full stop
+        _rigidBody.LinearVelocity = Vector3.Zero;
+        Actor.Position = position;
+        Actor.Rotation = rotation;
     }
 
     /// <inheritdoc />
