@@ -7,8 +7,15 @@ public class FloatAverage
 {
     private Queue<float> _values;
     private int _windowSize;
+    /// <summary>
+    /// returns the average over the latest (windowSize) values or 0 if there are no values
+    /// </summary>
     public float Average { get; }
     
+    /// <summary>
+    /// Create an accumulator for a floating window average of float values
+    /// </summary>
+    /// <param name="windowSize"></param>
     public FloatAverage(int windowSize)
     {
         _windowSize = windowSize;
