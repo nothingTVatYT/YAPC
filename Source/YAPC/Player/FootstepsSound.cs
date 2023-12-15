@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using FlaxEngine;
 
@@ -19,11 +18,15 @@ public class FootstepsSound : Script
     public enum MovementType { Idle, Walking, Running }
     public CategorizedSound[] Sounds;
     public AudioSource FootstepsAudioSource;
-
+    public float MinTimeOfClip = 0.5f;
     public Tag[] RelevantGroundTags = { Tag.Default };
+
+    public bool CheckIsPlaying = false;
     //[HideInEditor]
     public MovementType Movement;
-    //[HideInEditor]
+
+    private float _lastClipStarted;
+
     /// <summary>
     /// set the ground tags to define which footstep sound should be used
     /// </summary>
@@ -42,18 +45,11 @@ public class FootstepsSound : Script
     }
 
     private Tag _currentGroundTag;
-    private MovementType _previousMovement;
-    private Tag _previousGroundTag = Tag.Default;
     private readonly Random _random = new();
-    private AudioClip _previousClip;
 
     /// <inheritdoc/>
     public override void OnUpdate()
     {
-        var groundChanged = !_previousGroundTag.Equals(_currentGroundTag);
-        var soundsChanges = groundChanged || _previousMovement != Movement;
-        if (!soundsChanges)
-            return;
         // categorize the current movement
         var category = Movement switch
         {
@@ -62,32 +58,33 @@ public class FootstepsSound : Script
             _ => 0
         };
 
-        var tagIndex = RelevantGroundTags.Length == 0
-            ? 0
-            : Array.FindIndex(RelevantGroundTags, tag => tag == _currentGroundTag);
-        if (tagIndex < 0)
-            tagIndex = 0;
-        category += tagIndex;
         AudioClip clip = null;
-        foreach (var ac in Sounds)
+
+        if (category > 0)
         {
-            if (ac.CategoryId == category)
-                clip = ac.Clips[_random.Next(ac.Clips.Length)];
+            var tagIndex = RelevantGroundTags.Length == 0
+                ? 0
+                : Array.FindIndex(RelevantGroundTags, tag => tag == _currentGroundTag);
+            if (tagIndex < 0)
+                tagIndex = 0;
+            category += tagIndex;
+            foreach (var ac in Sounds)
+            {
+                if (ac.CategoryId == category)
+                    clip = ac.Clips[_random.Next(ac.Clips.Length)];
+            }
         }
 
-        if (clip != null && clip.Equals(_previousClip))
+        if (clip != null)
         {
-            _previousGroundTag = _currentGroundTag;
-            _previousMovement = Movement;
-            return;
+            if (FootstepsAudioSource.IsActuallyPlayingSth && CheckIsPlaying)
+                return;
+            if (Time.GameTime >= _lastClipStarted + MinTimeOfClip)
+            {
+                FootstepsAudioSource.Clip = clip;
+                FootstepsAudioSource.Play();
+                _lastClipStarted = Time.GameTime;
+            }
         }
-        if (FootstepsAudioSource.IsActuallyPlayingSth)
-            FootstepsAudioSource.Stop();
-        FootstepsAudioSource.Clip = clip;
-        if (Movement != MovementType.Idle)
-            FootstepsAudioSource.Play();
-        _previousGroundTag = _currentGroundTag;
-        _previousMovement = Movement;
-        _previousClip = clip;
     }
 }
