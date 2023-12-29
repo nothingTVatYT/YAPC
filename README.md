@@ -2,6 +2,10 @@
 Yet another player controller (rigidbody, physics based FPS) for the Flax Engine
 
 Setup:
+You can load this project as a plugin in Flax. Just launch the Tools>Plugin dialog and use this github URL to clone it
+into your project.
+![Screenshot_35](https://github.com/nothingTVatYT/YAPC/assets/34131388/76c38330-25fb-4a78-b657-5284d20aafba)
+
 If you haven't set up your input controls yet you can use the function in the main menu: Tools>YAPC>Check Input Settings.
 
 You can use the prefabs but basically it's a rigidbody with the script attached and three child nodes.
