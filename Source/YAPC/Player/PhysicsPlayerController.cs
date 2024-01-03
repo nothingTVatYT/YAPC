@@ -241,6 +241,18 @@ public class PhysicsPlayerController : PlayerController
             }
         }
 
+        // simulate a higher friction side to side than forward if not strafing
+        if (_isGrounded)
+        {
+            if (Mathf.Abs(_movementLocalDirection.X) < Mathf.Epsilon)
+            {
+                var velocityX = _rigidBody.Transform.WorldToLocalVector(_rigidBody.LinearVelocity);
+                velocityX.Y = 0;
+                velocityX.Z = 0;
+                _rigidBody.AddForce(_rigidBody.Transform.TransformDirection(-velocityX), ForceMode.Acceleration);
+            }
+        }
+
         _rigidBody.Direction = Vector3.Lerp(_rigidBody.Direction, _playerTargetDirection, 0.5f);
 
         // limit speed
