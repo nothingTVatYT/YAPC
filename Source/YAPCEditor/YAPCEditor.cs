@@ -18,8 +18,8 @@ public class YAPCEditor : EditorPlugin
     {
         base.InitializeEditor();
         _menu = Editor.UI.MenuTools.ContextMenu.AddChildMenu("YAPC");
-        var button = _menu.ContextMenu.AddButton("Check Input Settings");
-        button.Clicked += CheckInputSettings;
+        var button = _menu.ContextMenu.AddButton("Check Input Settings and Tags");
+        button.Clicked += CheckSettings;
     }
 
     /// <inheritdoc />
@@ -33,10 +33,11 @@ public class YAPCEditor : EditorPlugin
         }
     }
 
-    private void CheckInputSettings()
+    private void CheckSettings()
     {
         var window = new YAPCEditorWindow();
         window.CheckInputSettings();
+        window.CheckTags();
         window.Show();
     }
 }

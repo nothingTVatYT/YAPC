@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using System.Linq;
 using FlaxEditor;
 using FlaxEditor.Content.Settings;
 using FlaxEditor.CustomEditors;
 using FlaxEngine;
+using YAPC.Player;
 
 namespace YAPCEditor;
 
@@ -10,6 +12,7 @@ public class YAPCEditorWindow : CustomEditorWindow
 {
     private List<ActionConfig> _actionsMissing;
     private List<AxisConfig> _axisMappingsMissing;
+    private List<string> _tagsMissing;
     
     private ActionConfig[] _neededActions =
     {
@@ -31,6 +34,8 @@ public class YAPCEditorWindow : CustomEditorWindow
         new() { Name = "Mouse Y", Axis = InputAxisType.MouseY, Gamepad = InputGamepadIndex.Gamepad0, PositiveButton = KeyboardKeys.None, NegativeButton = KeyboardKeys.None, DeadZone = 1f, Sensitivity = 0.4f, Gravity = 1f, Scale = 1f, Snap = false },
         new() { Name = "Mouse X", Axis = InputAxisType.GamepadRightStickY, Gamepad = InputGamepadIndex.Gamepad0, PositiveButton = KeyboardKeys.None, NegativeButton = KeyboardKeys.None, DeadZone = 0.19f, Sensitivity = 1f, Gravity = 1f, Scale = 4f, Snap = false },
     };
+
+    private readonly string[] _neededTags = { PlayerController.CrosshairTagName };
 
     /// <inheritdoc />
     public override void Initialize(LayoutElementsContainer layout)
@@ -71,6 +76,23 @@ public class YAPCEditorWindow : CustomEditorWindow
                 addAll.Button.Clicked += OnAddAllAxisMappings;
             }
         }
+
+        if (_tagsMissing != null)
+        {
+            var tagsGroup = layout.Group("Tags");
+            if (_tagsMissing.Count == 0)
+                tagsGroup.Label("All necessary tags are defined.");
+            else
+            {
+                foreach (var missingTag in _tagsMissing)
+                {
+                    tagsGroup.Label(missingTag);
+                }
+
+                var addAll = tagsGroup.Button("Add all");
+                addAll.Button.Clicked += OnAddAllTags;
+            }
+        }
     }
 
     private void OnAddAllActions()
@@ -109,6 +131,16 @@ public class YAPCEditorWindow : CustomEditorWindow
         RebuildLayout();
     }
 
+    private void OnAddAllTags()
+    {
+        var tagsAndLayers = GameSettings.Load<LayersAndTagsSettings>() ?? new LayersAndTagsSettings();
+        tagsAndLayers.Tags.AddRange(_tagsMissing);
+        GameSettings.Save(tagsAndLayers);
+        GameSettings.Apply();
+        CheckTags();
+        RebuildLayout();
+    }
+
     /// <summary>
     /// check the configured input settings for missing pieces needed for the player controller
     /// </summary>
@@ -132,4 +164,18 @@ public class YAPCEditorWindow : CustomEditorWindow
         _axisMappingsMissing = axisMappingsToAdd;
     }
 
+    /// <summary>
+    /// Check if needed tags are configured in this project
+    /// </summary>
+    public void CheckTags()
+    {
+        _tagsMissing ??= new List<string>();
+        _tagsMissing.Clear();
+        var existingTags = Tags.List;
+        foreach (var neededTag in _neededTags)
+        {
+            if (!existingTags.Contains(neededTag))
+                _tagsMissing.Add(neededTag);
+        }
+    }
 }

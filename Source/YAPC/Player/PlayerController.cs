@@ -70,4 +70,6 @@ public abstract class PlayerController : Script
     /// Returns true if the player is on a surface, false if in the air (e.g. jumping, falling)
     /// </summary>
     public abstract bool IsGrounded { get; }
+
+    public static string CrosshairTagName = "Crosshair";
 }

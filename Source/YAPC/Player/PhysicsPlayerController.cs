@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using FlaxEngine;
 using YAPC.Tools;
 
@@ -56,6 +57,9 @@ public class PhysicsPlayerController : PlayerController
     public override void OnStart()
     {
         PlayerCamera = Actor.FindActor<Camera>();
+        var crosshairTag = Tags.Get(CrosshairTagName);
+        if (crosshairTag != null)
+            CrossHair = Level.FindActors(crosshairTag).First()?.As<UIControl>();
         if (PlayerModel != null && HidePlayerModelOnStart)
             PlayerModel.IsActive = false;
         _rigidBody = Actor.As<RigidBody>();
