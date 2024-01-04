@@ -18,7 +18,8 @@ public class FootstepsSound : Script
     public enum MovementType { Idle, Walking, Running }
     public CategorizedSound[] Sounds;
     public AudioSource FootstepsAudioSource;
-    public float MinTimeOfClip = 0.5f;
+    public float MinTimeOfWalkingClip = 0.4f;
+    public float MinTimeOfRunningClip = 0.3f;
     public Tag[] RelevantGroundTags = { Tag.Default };
 
     public bool CheckIsPlaying = false;
@@ -79,8 +80,15 @@ public class FootstepsSound : Script
         {
             if (FootstepsAudioSource.IsActuallyPlayingSth && CheckIsPlaying)
                 return;
-            if (Time.GameTime >= _lastClipStarted + MinTimeOfClip)
+            var interval = Movement switch
             {
+                MovementType.Walking => MinTimeOfWalkingClip,
+                MovementType.Running => MinTimeOfRunningClip,
+                _ => 1
+            };
+            if (Time.GameTime >= _lastClipStarted + interval)
+            {
+                FootstepsAudioSource.Stop();
                 FootstepsAudioSource.Clip = clip;
                 FootstepsAudioSource.Play();
                 _lastClipStarted = Time.GameTime;

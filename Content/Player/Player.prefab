@@ -9,9 +9,9 @@
 		"Name": "Player",
 		"Transform": {
 			"Translation": {
-				"X": 0.0,
-				"Y": 119.53414916992188,
-				"Z": 75.60173797607422
+				"X": 2452.334228515625,
+				"Y": 593.8660278320313,
+				"Z": -3548.744873046875
 			},
 			"Orientation": {
 				"X": 0.0,
@@ -41,13 +41,19 @@
 		{
 			"CategoryId": 1,
 			"Clips": [
-				"08dbfc87f9552a056814a8c9bb6da072"
+				"08dbfcf0f8a5b9c9441e2730088bd515",
+				"08dbfcf0f8ad3707441e6ac2088e78c8",
+				"08dbfcf0f8af7513441e9fe508908c2b",
+				"08dbfcf0f8b50235441ee15e08931aeb"
 			]
 		},
 		{
 			"CategoryId": 2,
 			"Clips": [
-				"08dbfc87f949159a6812635cbb56eaad"
+				"08dbfcf0f8bb2fa4441f21b608959e59",
+				"08dbfcf0f8c3a365441f640308983560",
+				"08dbfcf0f8cb3cf0441fa6b2089ad035",
+				"08dbfcf0f8d329a9441fe85c089d60d7"
 			]
 		}
 	],
@@ -130,7 +136,7 @@
 				"Z": 0.0
 			}
 		},
-		"Loop": true
+		"Volume": 0.1899999976158142
 	}
 ]
 }
