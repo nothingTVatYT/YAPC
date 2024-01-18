@@ -15,7 +15,7 @@ public class YAPC : GamePlugin
             AuthorUrl = null,
             HomepageUrl = null,
             RepositoryUrl = "https://github.com/nothingTVatYT/YAPC",
-            Description = "This is yet another player controller.",
+            Description = "This is yet another player controller but based on a RigidBody.",
             Version = new Version(1, 0),
             IsAlpha = false,
             IsBeta = false,
