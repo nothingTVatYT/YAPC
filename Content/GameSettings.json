@@ -1,11 +1,37 @@
-﻿{
+{
 	"ID": "b977939b436cc20f2cc674aaf1c1cd78",
 	"TypeName": "FlaxEditor.Content.Settings.GameSettings",
-	"EngineBuild": 6167,
+	"EngineBuild": 6407,
 	"Data": {
 	"ProductName": "YAPC",
 	"CompanyName": "",
-	"Version": "1.0.0",
-	"FirstScene": "00000000000000000000000000000000"
+	"CopyrightNotice": null,
+	"Icon": "08dc18061975105b1e51a4b878310c73",
+	"FirstScene": "00000000000000000000000000000000",
+	"NoSplashScreen": false,
+	"SplashScreen": null,
+	"Time": null,
+	"Audio": null,
+	"LayersAndTags": null,
+	"Physics": null,
+	"Input": null,
+	"Graphics": null,
+	"Network": null,
+	"Navigation": null,
+	"Localization": null,
+	"GameCooking": null,
+	"Streaming": null,
+	"CustomSettings": null,
+	"WindowsPlatform": null,
+	"UWPPlatform": null,
+	"LinuxPlatform": null,
+	"PS4Platform": null,
+	"XboxOnePlatform": null,
+	"XboxScarlettPlatform": null,
+	"AndroidPlatform": null,
+	"SwitchPlatform": null,
+	"PS5Platform": null,
+	"MacPlatform": null,
+	"iOSPlatform": null
 }
 }
