@@ -59,7 +59,12 @@ public class PhysicsPlayerController : PlayerController
         PlayerCamera = Actor.FindActor<Camera>();
         var crosshairTag = Tags.Get(CrosshairTagName);
         if (crosshairTag != null)
-            CrossHair = Level.FindActors(crosshairTag).First()?.As<UIControl>();
+        {
+            var actorsWithTag = Level.FindActors(crosshairTag);
+            if (actorsWithTag != null && actorsWithTag.Length > 0)
+                CrossHair = actorsWithTag.First().As<UIControl>();
+        }
+
         if (PlayerModel != null && HidePlayerModelOnStart)
             PlayerModel.IsActive = false;
         _rigidBody = Actor.As<RigidBody>();
