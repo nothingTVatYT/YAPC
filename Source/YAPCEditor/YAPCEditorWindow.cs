@@ -5,23 +5,28 @@ using FlaxEditor.Content.Settings;
 using FlaxEditor.CustomEditors;
 using FlaxEngine;
 using YAPC.Player;
+// ReSharper disable InconsistentNaming
+// ReSharper disable IdentifierTypo
 
 namespace YAPCEditor;
 
+/// <summary>
+/// Editor for the YAC plugin that checks for missing input settings an tags
+/// </summary>
 public class YAPCEditorWindow : CustomEditorWindow
 {
     private List<ActionConfig> _actionsMissing;
     private List<AxisConfig> _axisMappingsMissing;
     private List<string> _tagsMissing;
     
-    private ActionConfig[] _neededActions =
+    private readonly ActionConfig[] _neededActions =
     {
         new() { Name = "Jump", Mode = InputActionMode.Press, Key = KeyboardKeys.Spacebar, MouseButton = MouseButton.None, GamepadButton = GamepadButton.RightTrigger, Gamepad = InputGamepadIndex.All },
         new() { Name = "Crouch", Mode = InputActionMode.Pressing, Key = KeyboardKeys.X, MouseButton = MouseButton.None, GamepadButton = GamepadButton.LeftShoulder, Gamepad = InputGamepadIndex.All },
         new() { Name = "Sprint", Mode = InputActionMode.Pressing, Key = KeyboardKeys.Shift, MouseButton = MouseButton.None, GamepadButton = GamepadButton.RightShoulder, Gamepad = InputGamepadIndex.All },
         new() { Name = "Fire", Mode = InputActionMode.Press, Key = KeyboardKeys.F, MouseButton = MouseButton.Left, GamepadButton = GamepadButton.A, Gamepad = InputGamepadIndex.All }
     };
-    private AxisConfig[] _neededAxisMappings =
+    private readonly AxisConfig[] _neededAxisMappings =
     {
         new() { Name = "Horizontal", Axis = InputAxisType.KeyboardOnly, Gamepad = InputGamepadIndex.Gamepad0, PositiveButton = KeyboardKeys.D, NegativeButton = KeyboardKeys.A, DeadZone = 0.01f, Sensitivity = 5f, Gravity = 5f, Scale = 1f, Snap = true },
         new() { Name = "Horizontal", Axis = InputAxisType.KeyboardOnly, Gamepad = InputGamepadIndex.Gamepad0, PositiveButton = KeyboardKeys.ArrowRight, NegativeButton = KeyboardKeys.ArrowLeft, DeadZone = 0.01f, Sensitivity = 5f, Gravity = 5f, Scale = 1f, Snap = true },

@@ -9,6 +9,7 @@ namespace YAPCEditor;
 /// </summary>
 public class YAPCEditor : EditorPlugin
 {
+    /// <inheritdoc />
     public override Type GamePluginType => typeof(YAPC.YAPC);
 
     private ContextMenuChildMenu _menu;

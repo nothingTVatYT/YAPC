@@ -1,7 +1,11 @@
 ﻿using FlaxEngine;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace YAPC.Player;
 
+/// <summary>
+/// A struct for player default values
+/// </summary>
 public struct PlayerDefinition
 {
     [Tooltip("The player's height in total when standing in cm")]
@@ -34,6 +38,7 @@ public abstract class PlayerController : Script
     /// Default values for the player
     /// </summary>
     [Tooltip("Defaults of the player")]
+    // ReSharper disable once MemberCanBeProtected.Global
     public PlayerDefinition PlayerValues = PlayerDefinition.DefaultPlayer;
 
     /// <summary>
@@ -71,5 +76,5 @@ public abstract class PlayerController : Script
     /// </summary>
     public abstract bool IsGrounded { get; }
 
-    public static string CrosshairTagName = "Crosshair";
+    public const string CrosshairTagName = "Crosshair";
 }

@@ -3,10 +3,13 @@ using System.Linq;
 
 namespace YAPC.Tools;
 
+/// <summary>
+/// Calculates a floating window average over supplied values
+/// </summary>
 public class FloatAverage
 {
-    private Queue<float> _values;
-    private int _windowSize;
+    private readonly Queue<float> _values;
+    private readonly int _windowSize;
     /// <summary>
     /// returns the average over the latest (windowSize) values or 0 if there are no values
     /// </summary>
@@ -33,5 +36,4 @@ public class FloatAverage
             _values.Dequeue();
         _values.Enqueue(value);
     }
-    
 }
