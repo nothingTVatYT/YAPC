@@ -29,7 +29,8 @@
 		"ParentID": "08dbfcf2fd7257507934d70f1b6f23c2",
 		"V": {
 	"PlayerCamera": "08dbfcf2fd77f3a07934d70f1b6f23c8",
-	"PlayerModel": "08dbfcf2fd768ad37934d70f1b6f23c8"
+	"PlayerModel": "08dbfcf2fd768ad37934d70f1b6f23c8",
+	"DecelerateOnIdle": true
 }
 	},
 	{

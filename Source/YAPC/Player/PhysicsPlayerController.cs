@@ -2,34 +2,56 @@
 using System.Linq;
 using FlaxEngine;
 using YAPC.Tools;
+#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member
 
 namespace YAPC.Player;
 
 /// <summary>
-/// PhysicsPlayerController Script for a rigidbody-based FPS-style player controller 
+/// PhysicsPlayerController Script for a RigidBody-based FPS-style player controller 
 ///
 /// This controller expects the actions "Crouch", "Sprint" and "Jump" on top of the defaults in the input settings.
 /// 
 /// </summary>
 public class PhysicsPlayerController : PlayerController
 {
+    // ReSharper disable FieldCanBeMadeReadOnly.Global
+    // ReSharper disable ConvertToConstant.Global
+    // ReSharper disable MemberCanBePrivate.Global
+    // ReSharper disable UnassignedField.Global
     /// <summary>
     /// Adapt the collider and the camera local position to the player values
     /// </summary>
     [Tooltip("Adapt the collider and camera location to the player values")]
     public bool AdaptCollider = true;
+    [Tooltip("The camera simulating the player's eyes")]
     public Camera PlayerCamera;
+    [Tooltip("A model as a placeholder in editor mode for the player")]
     public Actor PlayerModel;
     [Tooltip("UI control marking the center of the screen")]
     public UIControl CrossHair;
+    [Tooltip("Set to true to hide the placeholder in play mode")]
     public bool HidePlayerModelOnStart = true;
     [Tooltip("Use the mouse to rotate the body, not only the camera")]
     public bool RotateBodyWithCamera = true;
+    [Tooltip("Counteract forward momentum when there is no movement requested")]
+    public bool DecelerateOnIdle = false;
+    [Tooltip("Simulate a higher friction when the player is sliding left or right")]
+    public bool SimulateSideFriction = true;
+    [Tooltip("Limit the speed of the player to the defined speeds (walk/run)")]
+    public bool LimitSpeed = true;
+    [Tooltip("Rotation speed in degrees/sec when using the keyboard")]
     public float KeyboardRotationSpeed = 1000f;
+    [Tooltip("Rotation factor when using the mouse")]
     public float MouseSpeed = 1f;
+    [Tooltip("The force to be applied to make the player move forward")]
     public float AccelerationForce = 10000;
-    public float DecelerationForceFactor = 50;
+    [Tooltip("A factor for the jump force")]
     public float JumpForceFactor = 3.5f;
+    // ReSharper restore ConvertToConstant.Global
+    // ReSharper restore FieldCanBeMadeReadOnly.Global
+    // ReSharper restore MemberCanBePrivate.Global
+    // ReSharper restore UnassignedField.Global
+
     /// <inheritdoc />
     public override float CurrentSpeed => _speedAverage.Average;
     /// <inheritdoc />
@@ -43,6 +65,7 @@ public class PhysicsPlayerController : PlayerController
 
     private RigidBody _rigidBody;
     private CapsuleCollider _playerCollider;
+    private Vector3 _groundVelocity = Vector3.Zero;
     private bool _isGrounded;
     private bool _isRunning;
     private bool _startJumping;
@@ -61,7 +84,7 @@ public class PhysicsPlayerController : PlayerController
         if (crosshairTag != null)
         {
             var actorsWithTag = Level.FindActors(crosshairTag);
-            if (actorsWithTag != null && actorsWithTag.Length > 0)
+            if (actorsWithTag is { Length: > 0 })
                 CrossHair = actorsWithTag.First().As<UIControl>();
         }
 
@@ -191,15 +214,25 @@ public class PhysicsPlayerController : PlayerController
         if (_rigidBody == null)
             return;
 
+        _groundVelocity = Vector3.Zero;
         var heightOverGround = PlayerValues.Height;
         if (Physics.SphereCastAll(Actor.Position, _playerCollider.Radius, Vector3.Down,
                 out var results, PlayerValues.Height))
         {
+            var nearestHitPoint = Vector3.Zero;
+            RigidBody nearestRigidBody = null;
             foreach (var hit in results)
             {
                 if (hit.Collider.Equals(_playerCollider))
                     continue;
-                heightOverGround = Mathf.Min(heightOverGround, (hit.Point - Actor.Position).Y);
+                var heightOverHitPoint = (Actor.Position - hit.Point).Y - _playerCollider.Radius - _playerCollider.Height/2; 
+                if (heightOverHitPoint < heightOverGround)
+                {
+                    heightOverGround = heightOverHitPoint;
+                    nearestHitPoint = hit.Point;
+                    nearestRigidBody = hit.Collider.AttachedRigidBody;
+                }
+                
                 if (_footsteps != null)
                     try
                     {
@@ -209,6 +242,12 @@ public class PhysicsPlayerController : PlayerController
                     {
                         _footsteps.GroundTags = null;
                     }
+            }
+
+            if (nearestRigidBody != null)
+            {
+                _groundVelocity = CalculateVelocity(nearestRigidBody, nearestHitPoint);
+                _playerTargetDirection *= Quaternion.Euler(nearestRigidBody.AngularVelocity);
             }
         }
 
@@ -226,32 +265,33 @@ public class PhysicsPlayerController : PlayerController
             _breaking = false;
         }
 
-        // decelerate on ground if there is no input
-        if (_isGrounded)
+        // decelerate on ground if there is no input and no ground movement
+        if (_isGrounded && DecelerateOnIdle && _groundVelocity.LengthSquared < Mathf.Epsilon)
         {
             if (_movementLocalDirection.LengthSquared < Mathf.Epsilon)
             {
                 if (!_breaking)
                 {
                     _breaking = true;
-                    _stopTime = Time.GameTime + 0.5f;
+                    _stopTime = Time.GameTime + 0.25f;
                 }
                 else
                 {
                     var velocityXz = _rigidBody.LinearVelocity;
-                    velocityXz.Y = 0;
                     if (Time.GameTime >= _stopTime && velocityXz.LengthSquared > Mathf.Epsilon)
-                        _rigidBody.AddForce(-velocityXz * DecelerationForceFactor, ForceMode.Acceleration);
+                    {
+                        _rigidBody.AddForce(-velocityXz, ForceMode.VelocityChange);
+                    }
                 }
             }
         }
 
         // simulate a higher friction side to side than forward if not strafing
-        if (_isGrounded)
+        if (_isGrounded && SimulateSideFriction)
         {
             if (Mathf.Abs(_movementLocalDirection.X) < Mathf.Epsilon)
             {
-                var velocityX = _rigidBody.Transform.WorldToLocalVector(_rigidBody.LinearVelocity);
+                var velocityX = _rigidBody.Transform.WorldToLocalVector(_rigidBody.LinearVelocity - _groundVelocity);
                 velocityX.Y = 0;
                 velocityX.Z = 0;
                 _rigidBody.AddForce(_rigidBody.Transform.TransformDirection(-velocityX), ForceMode.Acceleration);
@@ -261,11 +301,11 @@ public class PhysicsPlayerController : PlayerController
         _rigidBody.Direction = Vector3.Lerp(_rigidBody.Direction, _playerTargetDirection, 0.5f);
 
         // limit speed
-        var speedXz = _rigidBody.LinearVelocity;
+        var speedXz = _rigidBody.LinearVelocity - _groundVelocity;
         speedXz.Y = 0;
         var speedScalar = speedXz.Length;
         _speedAverage.Add(speedScalar);
-        if (speedScalar > _maxSpeed)
+        if (speedScalar > _maxSpeed && LimitSpeed)
         {
             _rigidBody.AddForce(-speedXz, ForceMode.Acceleration);
             _movementLocalDirection.Z = 0;
@@ -282,6 +322,12 @@ public class PhysicsPlayerController : PlayerController
             _footsteps.Movement = speedScalar > 1
                 ? (_isRunning ? FootstepsSound.MovementType.Running : FootstepsSound.MovementType.Walking)
                 : FootstepsSound.MovementType.Idle;
+    }
+
+    private static Vector3 CalculateVelocity(RigidBody rigidBody, Vector3 point)
+    {
+        var r = point - rigidBody.Position;
+        return r + Vector3.Cross(rigidBody.AngularVelocity, r) + rigidBody.LinearVelocity;
     }
 
     /// <inheritdoc />
@@ -314,7 +360,7 @@ public class PhysicsPlayerController : PlayerController
     /// <inheritdoc />
     public override void RequestTeleport(Vector3 position, Matrix rotation)
     {
-        // force the rigidbody to a full stop
+        // force the RigidBody to a full stop
         _rigidBody.LinearVelocity = Vector3.Zero;
         Actor.Position = position;
         Actor.Rotation = rotation;
