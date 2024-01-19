@@ -221,6 +221,7 @@ public class PhysicsPlayerController : PlayerController
         {
             var nearestHitPoint = Vector3.Zero;
             RigidBody nearestRigidBody = null;
+            Actor nearestGroundActor = null;
             foreach (var hit in results)
             {
                 if (hit.Collider.Equals(_playerCollider))
@@ -229,20 +230,21 @@ public class PhysicsPlayerController : PlayerController
                 if (heightOverHitPoint < heightOverGround)
                 {
                     heightOverGround = heightOverHitPoint;
+                    nearestGroundActor = hit.Collider;
                     nearestHitPoint = hit.Point;
                     nearestRigidBody = hit.Collider.AttachedRigidBody;
                 }
-                
-                if (_footsteps != null)
-                    try
-                    {
-                        _footsteps.GroundTags = hit.Collider.Tags;
-                    }
-                    catch (Exception)
-                    {
-                        _footsteps.GroundTags = null;
-                    }
             }
+
+            if (_footsteps != null)
+                try
+                {
+                    _footsteps.GroundTags = nearestGroundActor?.Tags;
+                }
+                catch (Exception)
+                {
+                    _footsteps.GroundTags = null;
+                }
 
             if (nearestRigidBody != null)
             {
