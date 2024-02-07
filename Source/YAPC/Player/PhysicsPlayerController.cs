@@ -302,6 +302,9 @@ public class PhysicsPlayerController : PlayerController
 
         _rigidBody.Direction = Vector3.Lerp(_rigidBody.Direction, _playerTargetDirection, 0.5f);
 
+        if (!_isGrounded)
+            _rigidBody.AngularVelocity = Vector3.Zero;
+
         // limit speed
         var speedXz = _rigidBody.LinearVelocity - _groundVelocity;
         speedXz.Y = 0;
@@ -364,6 +367,7 @@ public class PhysicsPlayerController : PlayerController
     {
         // force the RigidBody to a full stop
         _rigidBody.LinearVelocity = Vector3.Zero;
+        _rigidBody.AngularVelocity = Vector3.Zero;
         Actor.Position = position;
         Actor.Rotation = rotation;
     }
