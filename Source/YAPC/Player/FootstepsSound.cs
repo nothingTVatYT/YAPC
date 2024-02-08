@@ -36,12 +36,13 @@ public class FootstepsSound : Script
         set
         {
             _currentGroundTag = Tag.Default;
-            foreach (var tag in value)
-                if (RelevantGroundTags.Contains(tag))
-                {
-                    _currentGroundTag = tag;
-                    break;
-                }
+            if (value != null)
+                foreach (var tag in value)
+                    if (RelevantGroundTags.Contains(tag))
+                    {
+                        _currentGroundTag = tag;
+                        break;
+                    }
         }
     }
 
