@@ -324,7 +324,7 @@ public class PhysicsPlayerController : PlayerController
         }
         _rigidBody.AddForce(Actor.Transform.TransformDirection(_movementLocalDirection) * AccelerationForce, ForceMode.Acceleration);
         if (_footsteps != null && _isGrounded)
-            _footsteps.Movement = speedScalar > 1
+            _footsteps.Movement = speedScalar > 10
                 ? (_isRunning ? FootstepsSound.MovementType.Running : FootstepsSound.MovementType.Walking)
                 : FootstepsSound.MovementType.Idle;
     }
