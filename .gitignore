@@ -12,6 +12,7 @@ imgui.ini
 
 # Ignore Visual Studio project files (generated locally)
 *.csproj
+*.csproj.DotSettings
 *.sln
 launchSettings.json
 
