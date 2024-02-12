@@ -19,6 +19,9 @@ public class YAPCEditor : EditorPlugin
     {
         base.InitializeEditor();
         _menu = Editor.UI.MenuTools.ContextMenu.AddChildMenu("YAPC");
+        var maxItems = Editor.UI.MenuTools.ContextMenu.MaximumItemsInViewCount;
+        if (maxItems <= 20)
+            Editor.UI.MenuTools.ContextMenu.MaximumItemsInViewCount = 30;
         var button = _menu.ContextMenu.AddButton("Check Input Settings and Tags");
         button.Clicked += CheckSettings;
     }
