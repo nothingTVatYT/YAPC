@@ -249,7 +249,9 @@ public class PhysicsPlayerController : PlayerController
             if (nearestRigidBody != null)
             {
                 _groundVelocity = CalculateVelocity(nearestRigidBody, nearestHitPoint);
-                _playerTargetDirection *= Quaternion.Euler(nearestRigidBody.AngularVelocity);
+                // make sure we keep upright position
+                var groundAngularVelocity = nearestRigidBody.AngularVelocity;
+                _playerTargetDirection *= Quaternion.Euler(0, groundAngularVelocity.Y, 0);
             }
         }
 
