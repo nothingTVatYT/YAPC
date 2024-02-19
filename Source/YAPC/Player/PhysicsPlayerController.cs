@@ -387,6 +387,6 @@ public class PhysicsPlayerController : PlayerController
     /// <inheritdoc />
     public override void OnDebugDraw()
     {
-        DebugDraw.DrawRay(Actor.Position, _playerTargetDirection * 100, Color.Red );
+        DebugDraw.DrawRay(Actor.Position, _playerTargetDirection, Color.Red, 800);
     }
 }
